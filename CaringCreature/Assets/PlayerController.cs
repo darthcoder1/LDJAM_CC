@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class PlayerController : MonoBehaviour 
@@ -6,7 +7,16 @@ public class PlayerController : MonoBehaviour
 	private Rigidbody2D RBComp;
 	private SpriteRenderer SpriteComp;
 
+	public Text GameOverScreen;
+	public Text ShipsDestroyedDisplay;
+	public Text ShipsEatenDisplay;
+	public Text ShipsFedDisplay;
 
+	private bool bIsGameOver = false;
+	public int ShipsDestroyed = 0;
+	public int ShipsEaten = 0;
+	public int ShipsFed = 0;
+	
 	public float ClickForceStrength = 0.25f;
 	public float MaxVelocity = 2.0f;
 	public float WaterFrictionFactor = 0.05f;
@@ -16,8 +26,7 @@ public class PlayerController : MonoBehaviour
 	public ParticleSystem VomitPS;
 	public int WaterLineY;
 	public int WaterDetectionThreshold;
-
-
+	
 	public Sprite NormalSprite;
 	public Sprite MouthOpenSprite;
 	public Sprite FatSprite;
@@ -43,7 +52,7 @@ public class PlayerController : MonoBehaviour
 
 		SpriteComp = GetComponent<SpriteRenderer>();
 
-		bShipEaten = true;
+		bShipEaten = false;
 	}
 	
 	// Update is called once per frame
@@ -109,6 +118,7 @@ public class PlayerController : MonoBehaviour
 		{
 			if (bShipEaten)
 			{
+				++ShipsEaten;
 				// vomit
 				StartVomit();
 			}
@@ -122,7 +132,12 @@ public class PlayerController : MonoBehaviour
 			bMouthOpen = false;
 		}
 
+		UpdateGfx();
+		UpdateScore();
+	}
 
+	void UpdateGfx()
+	{
 		if (bMouthOpen)
 		{
 			SpriteComp.sprite = MouthOpenSprite;
@@ -146,6 +161,13 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
+	void UpdateScore()
+	{
+		ShipsDestroyedDisplay.text = "Ships Destroyed: " + ShipsDestroyed.ToString();
+		ShipsEatenDisplay.text = "Ships Eaten: " + ShipsEaten.ToString();
+		ShipsFedDisplay.text = "Ships Fed: " + ShipsFed.ToString();
+	}
+
 	void StartVomit()
 	{
 		VomitPS.enableEmission = true;
@@ -164,6 +186,7 @@ public class PlayerController : MonoBehaviour
 
 		if (dot > VomitDotHigherThan && distanceToNest < VomitRange)
 		{
+			++ShipsFed;
 			Nest.SendMessage("Feed");
 		}
 
@@ -187,5 +210,17 @@ public class PlayerController : MonoBehaviour
 			ship.EatenBy = this;
 			ship.SendMessage("Eaten");
 		}
+	}
+
+	void GameOver()
+	{
+		bIsGameOver = true;
+		GameOverScreen.enabled = true;
+		Invoke("RestartMap", 3.0f);
+	}
+
+	void RestartMap()
+	{
+		Application.LoadLevel(Application.loadedLevel);
 	}
 }

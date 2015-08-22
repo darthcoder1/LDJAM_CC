@@ -51,9 +51,12 @@ public class ShipController : MonoBehaviour {
 		
 		float dot = Vector2.Dot (Vector2.up, shipUpVec2);
 		
-		if (dot < 0.5f)
+		if (dot < 0.5f && !bIsSinking)
 		{
 			bIsSinking = true;
+
+			PlayerController PC = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+			++PC.ShipsDestroyed;
 		}
 
 		if (EatenBy)
