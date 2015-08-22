@@ -51,7 +51,7 @@ public class ShipController : MonoBehaviour {
 			//RBComp.gravityScale = bOverWater ? OverWaterGravityScale : UnderWaterGravityScale;
 			RBComp.drag = bOverWater ? 0.05f : 5.0f;
 			
-			if (!bOverWater)
+			if (!bOverWater && !bIsSinking)
 			{
 				RBComp.AddForce(new Vector2(0, UpwardForce));
 			}
@@ -60,6 +60,12 @@ public class ShipController : MonoBehaviour {
 	
 	void Eaten()
 	{
+		if (bIsSinking)
+		{
+			EatenBy = null;
+			return;
+		}
+
 		GameObject.DestroyObject(GetComponent<BoxCollider2D>());
 		GameObject.DestroyObject(GetComponent<Rigidbody2D>());
 		TimeSinceEaten = 0.0f;
@@ -71,7 +77,6 @@ public class ShipController : MonoBehaviour {
 		if (collider.CompareTag("OverWater"))
 		{
 			bOverWater = true;
-			RBComp.gravityScale = OverWaterGravityScale;
 		}
 	}
 	
@@ -80,7 +85,16 @@ public class ShipController : MonoBehaviour {
 		if (collider.CompareTag("OverWater"))
 		{
 			bOverWater = false;
-			RBComp.gravityScale = UnderWaterGravityScale;
+
+			Vector3 shipUpVec = transform.rotation * Vector3.up;
+			Vector2 shipUpVec2 = new Vector2(shipUpVec.x, shipUpVec.y);
+			
+			float dot = Vector2.Dot (Vector2.up, shipUpVec2);
+			
+			if (dot < 0.5f)
+			{
+				bIsSinking = true;
+			}
 		}
 	}
 }
