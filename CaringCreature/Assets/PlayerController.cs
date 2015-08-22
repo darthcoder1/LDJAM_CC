@@ -6,19 +6,41 @@ public class PlayerController : MonoBehaviour
 	private Rigidbody2D RBComp;
 	private SpriteRenderer SpriteComp;
 
+
 	public float ClickForceStrength = 0.25f;
 	public float MaxVelocity = 2.0f;
 	public float WaterFrictionFactor = 0.05f;
 	public float RotationSpeed = 0.1f;
 	public float OverWaterGravityScale = 0.35f;
 	public float UnderWaterGravityScale = 0.05f;
+	public ParticleSystem VomitPS;
 
 	public Sprite NormalSprite;
 	public Sprite MouthOpenSprite;
 
 	private bool bOverWater = false;
 	private bool bMouthOpen = false;
-	public int ShipsInStomach = 0;
+	private bool bShipEaten = false;
+	private Vector3 OriginalScale;
+
+	public bool ShipEaten
+	{
+		get { return bShipEaten; }
+		set 
+		{
+			if (value == true && !bShipEaten)
+			{
+				OriginalScale = transform.localScale;
+				transform.localScale *= 1.2f;
+				bShipEaten = true;
+			}
+			else if (!value && bShipEaten)
+			{
+				transform.localScale = OriginalScale;
+				bShipEaten = false;
+			}
+		}
+	}
 
 	// Use this for initialization
 	void Start () 
@@ -27,6 +49,8 @@ public class PlayerController : MonoBehaviour
 		RBComp.gravityScale = UnderWaterGravityScale;
 
 		SpriteComp = GetComponent<SpriteRenderer>();
+
+		ShipEaten = true;
 	}
 	
 	// Update is called once per frame
@@ -67,8 +91,42 @@ public class PlayerController : MonoBehaviour
 
 		Debug.DrawLine(transform.position, cursorPosVec3, debugLineCol);
 
-		bMouthOpen = Input.GetMouseButton(1);
-		SpriteComp.sprite = bMouthOpen ? MouthOpenSprite : NormalSprite;
+		if (Input.GetMouseButtonDown(1))
+		{
+			SpriteComp.sprite = MouthOpenSprite;
+			if (bShipEaten)
+			{
+				// vomit
+				StartVomit();
+			}
+			else
+			{
+				bMouthOpen = true;
+			}
+		}
+		else if (Input.GetMouseButtonUp(1))
+		{
+			bMouthOpen = false;
+			SpriteComp.sprite = NormalSprite;
+		}
+
+	}
+
+	void StartVomit()
+	{
+		VomitPS.enableEmission = true;
+		Invoke ("FinishVomit", 1.0f);
+	}
+
+	void FinishVomit()
+	{
+		if (bShipEaten)
+		{
+			bShipEaten = false;
+			VomitPS.enableEmission = false;
+			bMouthOpen = false;
+			SpriteComp.sprite = NormalSprite;
+		}
 	}
 
 	void OnTriggerEnter2D(Collider2D collider)
@@ -91,7 +149,7 @@ public class PlayerController : MonoBehaviour
 
 	void OnCollisionEnter2D(Collision2D collision)
 	{
-		if (collision.gameObject.CompareTag("Ship") && bMouthOpen && bOverWater && RBComp.velocity.y <= 0)
+		if (collision.gameObject.CompareTag("Ship") && bMouthOpen && bOverWater && !bShipEaten && RBComp.velocity.y <= 0)
 		{
 			ShipController ship = collision.gameObject.GetComponent<ShipController>();
 			ship.EatenBy = this;

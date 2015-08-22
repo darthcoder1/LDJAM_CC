@@ -34,14 +34,14 @@ public class ShipController : MonoBehaviour {
 		{
 			TimeSinceEaten += Time.deltaTime;
 
-			const float TimeForScaling = 1.0f;
-			float T = Mathf.Clamp(TimeSinceEaten / TimeForScaling, 0, 1.0f);
+			const float TimeForEating = 1.0f;
+			float T = Mathf.Clamp(TimeSinceEaten / TimeForEating, 0, 1.0f);
 			transform.localScale = new Vector3(Mathf.Lerp(OriginalScale.x, 0.0f, T), Mathf.Lerp(OriginalScale.y, 0.0f, T), 1.0f);
 			transform.position = Vector3.Lerp(transform.position, EatenBy.transform.position, T);
 
-			if (T > 0.95f)
+			if (TimeSinceEaten >= TimeForEating)
 			{
-				EatenBy.ShipsInStomach += 1;
+				EatenBy.ShipEaten = true;
 				GameObject.Destroy(this);
 				return;
 			}
