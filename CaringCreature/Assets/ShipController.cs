@@ -26,6 +26,8 @@ public class ShipController : MonoBehaviour {
 	private float Direction;
 
 
+
+
 	// Use this for initialization
 	void Start () 
 	{

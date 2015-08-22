@@ -1,0 +1,31 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class UselessFishScript : MonoBehaviour 
+{
+
+	private GameObject Player;
+	private Vector3 Direction;
+	private float Speed;
+
+	// Use this for initialization
+	void Start () 
+	{
+		Player = GameObject.FindGameObjectWithTag("Player");
+		Direction = transform.position.x < Player.transform.position.x ? Vector3.right : Vector3.left;
+		Speed = Random.Range(10,40);
+
+		if (Direction.x < 0)
+		{
+			float scale = Mathf.Clamp(Random.value + 0.5f, 0.3f, 1.2f);
+			Vector3 addScale = new Vector3(transform.localScale.x * -1.0f *scale, transform.localScale.y*scale, transform.localScale.z*scale);
+			transform.localScale = addScale;
+		}
+	}
+	
+	// Update is called once per frame
+	void Update () 
+	{
+		transform.position += Direction * Speed * Time.deltaTime;
+	}
+}
