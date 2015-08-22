@@ -65,4 +65,22 @@ public class ShipController : MonoBehaviour {
 		TimeSinceEaten = 0.0f;
 		OriginalScale = new Vector2(transform.localScale.x, transform.localScale.y);
 	}
+
+	void OnTriggerEnter2D(Collider2D collider)
+	{
+		if (collider.CompareTag("OverWater"))
+		{
+			bOverWater = true;
+			RBComp.gravityScale = OverWaterGravityScale;
+		}
+	}
+	
+	void OnTriggerExit2D(Collider2D collider)
+	{
+		if (collider.CompareTag("OverWater"))
+		{
+			bOverWater = false;
+			RBComp.gravityScale = UnderWaterGravityScale;
+		}
+	}
 }
