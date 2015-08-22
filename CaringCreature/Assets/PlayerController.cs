@@ -17,30 +17,16 @@ public class PlayerController : MonoBehaviour
 
 	public Sprite NormalSprite;
 	public Sprite MouthOpenSprite;
+	public Sprite FatSprite;
+
+	public PolygonCollider2D NormalCollider;
+	public PolygonCollider2D MouthOpenCollider;
+	public PolygonCollider2D FatCollider;
 
 	private bool bOverWater = false;
 	private bool bMouthOpen = false;
-	private bool bShipEaten = false;
-	private Vector3 OriginalScale;
+	public bool bShipEaten = false;
 
-	public bool ShipEaten
-	{
-		get { return bShipEaten; }
-		set 
-		{
-			if (value == true && !bShipEaten)
-			{
-				OriginalScale = transform.localScale;
-				transform.localScale *= 1.2f;
-				bShipEaten = true;
-			}
-			else if (!value && bShipEaten)
-			{
-				transform.localScale = OriginalScale;
-				bShipEaten = false;
-			}
-		}
-	}
 
 	// Use this for initialization
 	void Start () 
@@ -50,7 +36,7 @@ public class PlayerController : MonoBehaviour
 
 		SpriteComp = GetComponent<SpriteRenderer>();
 
-		ShipEaten = true;
+		bShipEaten = true;
 	}
 	
 	// Update is called once per frame
@@ -93,7 +79,6 @@ public class PlayerController : MonoBehaviour
 
 		if (Input.GetMouseButtonDown(1))
 		{
-			SpriteComp.sprite = MouthOpenSprite;
 			if (bShipEaten)
 			{
 				// vomit
@@ -107,15 +92,37 @@ public class PlayerController : MonoBehaviour
 		else if (Input.GetMouseButtonUp(1))
 		{
 			bMouthOpen = false;
-			SpriteComp.sprite = NormalSprite;
 		}
 
+
+		if (bMouthOpen)
+		{
+			SpriteComp.sprite = MouthOpenSprite;
+			NormalCollider.enabled = false;
+			FatCollider.enabled = false;
+			MouthOpenCollider.enabled = true;
+		}
+		else if (bShipEaten)
+		{
+			SpriteComp.sprite = FatSprite;
+			NormalCollider.enabled = false;
+			FatCollider.enabled = true;
+			MouthOpenCollider.enabled = false;
+		}
+		else 
+		{
+			SpriteComp.sprite = NormalSprite;
+			NormalCollider.enabled = true;
+			FatCollider.enabled = false;
+			MouthOpenCollider.enabled = false;
+		}
 	}
 
 	void StartVomit()
 	{
 		VomitPS.enableEmission = true;
 		Invoke ("FinishVomit", 1.0f);
+		bMouthOpen = true;
 	}
 
 	void FinishVomit()
@@ -125,7 +132,6 @@ public class PlayerController : MonoBehaviour
 			bShipEaten = false;
 			VomitPS.enableEmission = false;
 			bMouthOpen = false;
-			SpriteComp.sprite = NormalSprite;
 		}
 	}
 

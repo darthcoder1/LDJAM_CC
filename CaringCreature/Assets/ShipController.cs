@@ -41,7 +41,7 @@ public class ShipController : MonoBehaviour {
 
 			if (TimeSinceEaten >= TimeForEating)
 			{
-				EatenBy.ShipEaten = true;
+				EatenBy.bShipEaten = true;
 				GameObject.Destroy(this);
 				return;
 			}
