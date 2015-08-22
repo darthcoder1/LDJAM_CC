@@ -59,6 +59,11 @@ public class ShipController : MonoBehaviour {
 			++PC.ShipsDestroyed;
 		}
 
+		if (bIsSinking && transform.position.y < -100)
+		{
+			GameObject.Destroy(gameObject);
+		}
+
 		if (EatenBy)
 		{
 			TimeSinceEaten += Time.deltaTime;

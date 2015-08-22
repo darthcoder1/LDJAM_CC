@@ -4,6 +4,7 @@ using System.Collections;
 public class WorldScript : MonoBehaviour 
 {
 	private GameObject[] SpawnPoints;
+	private bool bSpawnInProgress = false;
 
 	// Use this for initialization
 	void Start () 
@@ -16,9 +17,10 @@ public class WorldScript : MonoBehaviour
 	{
 		GameObject[] AliveShips = GameObject.FindGameObjectsWithTag("Ship");
 
-		if (AliveShips == null || AliveShips.Length <= 0)
+		if (!bSpawnInProgress && (AliveShips == null || AliveShips.Length <= 0))
 		{
-			Invoke(SpawnShip, 3.0f);
+			bSpawnInProgress = true;
+			Invoke("SpawnShip", 3.0f);
 		}
 	}
 
@@ -27,6 +29,6 @@ public class WorldScript : MonoBehaviour
 		int idx = Random.Range(0, SpawnPoints.Length-1);
 		Object prefab = Resources.Load("ship");
 		GameObject go = (GameObject)GameObject.Instantiate(prefab, SpawnPoints[idx].transform.position, SpawnPoints[idx].transform.rotation);
-
+		bSpawnInProgress = false;
 	}
 }
