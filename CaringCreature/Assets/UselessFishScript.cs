@@ -13,7 +13,7 @@ public class UselessFishScript : MonoBehaviour
 	{
 		Player = GameObject.FindGameObjectWithTag("Player");
 		Direction = transform.position.x < Player.transform.position.x ? Vector3.right : Vector3.left;
-		Speed = Random.Range(10,40);
+		Speed = Random.Range(5,20);
 
 		float distToPlayer = (Player.transform.position - transform.position).magnitude;
 		if (distToPlayer > 250.0f)
@@ -32,6 +32,8 @@ public class UselessFishScript : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		transform.position += Direction * Speed * Time.deltaTime;
+		Vector3 newPos = transform.position + Direction * Speed * Time.deltaTime;
+		newPos.y += Mathf.Sin(newPos.x) * Time.deltaTime;
+		transform.position = newPos;
 	}
 }

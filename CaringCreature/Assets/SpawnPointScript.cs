@@ -8,6 +8,7 @@ public class SpawnPointScript : MonoBehaviour
 	void Start () 
 	{
 		GetComponent<SpriteRenderer>().enabled = false;
+
 	}
 	
 	// Update is called once per frame

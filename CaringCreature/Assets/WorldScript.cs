@@ -53,10 +53,6 @@ public class WorldScript : MonoBehaviour
 	void SpawnPrefab(string name, Vector2 pos)
 	{
 		Object prefab = Resources.Load(name);
-		if (!prefab)
-		{
-			int a=0;
-		}
 		GameObject go = (GameObject)GameObject.Instantiate(prefab, new Vector3(pos.x, pos.y, 10.0f), Quaternion.identity);
 	}
 
