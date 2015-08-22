@@ -17,6 +17,9 @@ public class ShipController : MonoBehaviour {
 
 	public float UpwardForce = 3.0f; // 9.81 is the opposite of the default gravity, which is 9.81. If we want the boat not to behave like a submarine the upward force has to be higher than the gravity in order to push the boat to the surface
 
+	private int WaterLineY;
+	private int WaterDetectionThreshold;
+
 
 	// Use this for initialization
 	void Start () 
@@ -25,6 +28,12 @@ public class ShipController : MonoBehaviour {
 		RBComp.gravityScale = OverWaterGravityScale;
 
 		EatenBy = null;
+
+		GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+		PlayerController pc = playerObj.GetComponent<PlayerController>();
+
+		WaterLineY = pc.WaterLineY;
+		WaterDetectionThreshold = pc.WaterDetectionThreshold;
 	}
 	
 	// Update is called once per frame

@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
 	public float OverWaterGravityScale = 0.35f;
 	public float UnderWaterGravityScale = 0.05f;
 	public ParticleSystem VomitPS;
+	public int WaterLineY;
+	public int WaterDetectionThreshold;
 
 	public Sprite NormalSprite;
 	public Sprite MouthOpenSprite;
@@ -42,13 +44,33 @@ public class PlayerController : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
+		Debug.DrawLine(new Vector3(-1000, WaterLineY, transform.position.z),
+		               new Vector3( 1000, WaterLineY, transform.position.z),
+		               Color.black);
+
 		Vector3 cursorPosVec3 = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
 		Vector2 playerPos = new Vector2(transform.position.x, transform.position.y);
 		Vector2 cursorPos = new Vector2(cursorPosVec3.x, cursorPosVec3.y);
 
+		Vector3 rotatedUpVec = transform.rotation * Vector3.up;
+		Vector2 rotatedUpVec2 = new Vector2(rotatedUpVec.x, rotatedUpVec.y);
+		
+		float dot = Vector2.Dot (Vector2.up, rotatedUpVec2);
+
 		Vector3 CurrentPlayerDir = transform.rotation * Vector3.right;
 		Debug.DrawLine(transform.position, transform.position + CurrentPlayerDir * 10.0f, Color.blue);
+
+		if (bOverWater)
+		{
+			bOverWater = VomitPS.transform.position.y > (WaterLineY - WaterDetectionThreshold);
+		}
+		else
+		{
+			bOverWater = VomitPS.transform.position.y > (WaterLineY + WaterDetectionThreshold);
+		}
+
+		RBComp.gravityScale = bOverWater ? OverWaterGravityScale : UnderWaterGravityScale;
 
 		Color debugLineCol = Color.green;
 		if (!bOverWater)
@@ -135,7 +157,7 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	void OnTriggerEnter2D(Collider2D collider)
+	/*void OnTriggerEnter2D(Collider2D collider)
 	{
 		if (collider.CompareTag("OverWater"))
 		{
@@ -151,7 +173,7 @@ public class PlayerController : MonoBehaviour
 			bOverWater = false;
 			RBComp.gravityScale = UnderWaterGravityScale;
 		}
-	}
+	}*/
 
 	void OnCollisionEnter2D(Collision2D collision)
 	{
