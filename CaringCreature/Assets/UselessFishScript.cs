@@ -15,6 +15,12 @@ public class UselessFishScript : MonoBehaviour
 		Direction = transform.position.x < Player.transform.position.x ? Vector3.right : Vector3.left;
 		Speed = Random.Range(10,40);
 
+		float distToPlayer = (Player.transform.position - transform.position).magnitude;
+		if (distToPlayer > 250.0f)
+		{
+			GameObject.Destroy(gameObject);
+		}
+
 		if (Direction.x < 0)
 		{
 			float scale = Mathf.Clamp(Random.value + 0.5f, 0.3f, 1.2f);

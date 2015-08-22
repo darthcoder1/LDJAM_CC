@@ -12,12 +12,19 @@ public class WorldScript : MonoBehaviour
 	public float SpawnIntervalForFish = 2.0f;
 	private float LastSpawnedFishTime = 0.0f;
 
+	private string[] FishPrefabs;
+
 	// Use this for initialization
 	void Start () 
 	{
 		SpawnPoints = GameObject.FindGameObjectsWithTag("SpawnPosition");
 		Player = GameObject.FindGameObjectWithTag("Player");
 		Nest = GameObject.FindGameObjectWithTag("Nest");
+
+		FishPrefabs = new string[3];
+		FishPrefabs[0] = "TrumpetFish";
+		FishPrefabs[1] = "Stupidwels";
+		FishPrefabs[2] = "Glotzfisch";
 	}
 	
 	// Update is called once per frame
@@ -39,13 +46,17 @@ public class WorldScript : MonoBehaviour
 			Vector2 pos = new Vector2();
 			pos.x = Player.transform.position.x + (Mathf.Sign(Random.Range(-1,1)) * 150.0f);
 			pos.y = Random.Range(-15, Nest.transform.position.y + 15);
-			SpawnPrefab("TrumpetFish", pos);
+			SpawnPrefab(FishPrefabs[Random.Range(0, FishPrefabs.Length)], pos);
 		}
 	}
 
 	void SpawnPrefab(string name, Vector2 pos)
 	{
 		Object prefab = Resources.Load(name);
+		if (!prefab)
+		{
+			int a=0;
+		}
 		GameObject go = (GameObject)GameObject.Instantiate(prefab, new Vector3(pos.x, pos.y, 10.0f), Quaternion.identity);
 	}
 
