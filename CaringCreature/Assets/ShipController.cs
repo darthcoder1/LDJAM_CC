@@ -23,6 +23,8 @@ public class ShipController : MonoBehaviour {
 	private int WaterLineY;
 	private int WaterDetectionThreshold;
 
+	private float Direction;
+
 
 	// Use this for initialization
 	void Start () 
@@ -39,12 +41,25 @@ public class ShipController : MonoBehaviour {
 		WaterDetectionThreshold = pc.WaterDetectionThreshold;
 
 		SpriteComp = GetComponent<SpriteRenderer>();
+
+		Direction = (float)Random.Range(-2500, 2500) / 100.0f;
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
 		bOverWater = transform.position.y > WaterLineY;
+
+		Rigidbody2D RBComp = GetComponent<Rigidbody2D>();
+		if (RBComp)
+		{
+			RBComp.AddForce(new Vector2(Direction, 0.0f));
+		}
+
+		if (transform.position.x > 500 || transform.position.x < -500)
+		{
+			GameObject.Destroy(gameObject);
+		}
 
 		Vector3 shipUpVec = transform.rotation * Vector3.up;
 		Vector2 shipUpVec2 = new Vector2(shipUpVec.x, shipUpVec.y);
@@ -87,7 +102,7 @@ public class ShipController : MonoBehaviour {
 			
 			if (!bOverWater && !bIsSinking)
 			{
-				RBComp.AddForce(new Vector2(0, UpwardForce));
+				RBComp.AddForce(new Vector2(Direction * Time.deltaTime, UpwardForce));
 			}
 		}
 
