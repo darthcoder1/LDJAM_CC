@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
 	public int WaterLineY;
 	public int WaterDetectionThreshold;
 
+
 	public Sprite NormalSprite;
 	public Sprite MouthOpenSprite;
 	public Sprite FatSprite;
@@ -29,6 +30,10 @@ public class PlayerController : MonoBehaviour
 	private bool bMouthOpen = false;
 	public bool bShipEaten = false;
 
+	private Vector2 CurPlayerDir;
+
+	public float VomitDotHigherThan = 0.8f;
+	public float VomitRange = 40.0f;
 
 	// Use this for initialization
 	void Start () 
@@ -59,6 +64,7 @@ public class PlayerController : MonoBehaviour
 		float dot = Vector2.Dot (Vector2.up, rotatedUpVec2);
 
 		Vector3 CurrentPlayerDir = transform.rotation * Vector3.right;
+		CurPlayerDir = new Vector2(CurrentPlayerDir.x, CurrentPlayerDir.y);
 		Debug.DrawLine(transform.position, transform.position + CurrentPlayerDir * 10.0f, Color.blue);
 
 		if (bOverWater)
@@ -145,6 +151,22 @@ public class PlayerController : MonoBehaviour
 		VomitPS.enableEmission = true;
 		Invoke ("FinishVomit", 1.0f);
 		bMouthOpen = true;
+
+		GameObject NestObj = GameObject.FindGameObjectWithTag("Nest");
+		NestScript Nest = NestObj.GetComponent<NestScript>();
+
+		Vector3 dirToNestVec3 = (Nest.transform.position - transform.position);
+		float distanceToNest = dirToNestVec3.magnitude;
+		dirToNestVec3.Normalize();
+		Vector2 dirToNest = new Vector2(dirToNestVec3.x, dirToNestVec3.y);
+
+		float dot = Vector2.Dot (CurPlayerDir, dirToNest);
+
+		if (dot > VomitDotHigherThan && distanceToNest < VomitRange)
+		{
+			Nest.SendMessage("Feed");
+		}
+
 	}
 
 	void FinishVomit()
@@ -156,24 +178,6 @@ public class PlayerController : MonoBehaviour
 			bMouthOpen = false;
 		}
 	}
-
-	/*void OnTriggerEnter2D(Collider2D collider)
-	{
-		if (collider.CompareTag("OverWater"))
-		{
-			bOverWater = true;
-			RBComp.gravityScale = OverWaterGravityScale;
-		}
-	}
-
-	void OnTriggerExit2D(Collider2D collider)
-	{
-		if (collider.CompareTag("OverWater"))
-		{
-			bOverWater = false;
-			RBComp.gravityScale = UnderWaterGravityScale;
-		}
-	}*/
 
 	void OnCollisionEnter2D(Collision2D collision)
 	{
