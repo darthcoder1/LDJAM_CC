@@ -21,6 +21,6 @@ public class CameraScript : MonoBehaviour {
 	void Update () 
 	{
 		float interpX = Mathf.SmoothDamp(transform.position.x, PlayerObj.transform.position.x, ref CurrentVelocity, DampingFactor);
-		transform.position = new Vector3(interpX, transform.position.y, transform.position.z);
+		//transform.position = new Vector3(interpX, transform.position.y, transform.position.z);
 	}
 }
