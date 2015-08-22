@@ -6,6 +6,9 @@ public class ShipController : MonoBehaviour {
 	private bool bOverWater;
 	private bool bIsSinking;
 
+	private SpriteRenderer SpriteComp;
+	public Sprite SinkingSprite;
+
 	public PlayerController EatenBy;
 	private float TimeSinceEaten;
 	private Vector2 OriginalScale;
@@ -34,11 +37,32 @@ public class ShipController : MonoBehaviour {
 
 		WaterLineY = pc.WaterLineY;
 		WaterDetectionThreshold = pc.WaterDetectionThreshold;
+
+		SpriteComp = GetComponent<SpriteRenderer>();
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
+		if (bOverWater)
+		{
+			bOverWater = transform.position.y > (WaterLineY - WaterDetectionThreshold);
+		}
+		else
+		{
+			bOverWater = transform.position.y > (WaterLineY + WaterDetectionThreshold);
+		}
+
+		Vector3 shipUpVec = transform.rotation * Vector3.up;
+		Vector2 shipUpVec2 = new Vector2(shipUpVec.x, shipUpVec.y);
+		
+		float dot = Vector2.Dot (Vector2.up, shipUpVec2);
+		
+		if (dot < 0.5f)
+		{
+			bIsSinking = true;
+		}
+
 		if (EatenBy)
 		{
 			TimeSinceEaten += Time.deltaTime;
@@ -65,6 +89,16 @@ public class ShipController : MonoBehaviour {
 				RBComp.AddForce(new Vector2(0, UpwardForce));
 			}
 		}
+
+		UpdateGfx();
+	}
+
+	void UpdateGfx()
+	{
+		if (bIsSinking)
+		{
+			SpriteComp.sprite = SinkingSprite;
+		}
 	}
 	
 	void Eaten()
@@ -79,31 +113,5 @@ public class ShipController : MonoBehaviour {
 		GameObject.DestroyObject(GetComponent<Rigidbody2D>());
 		TimeSinceEaten = 0.0f;
 		OriginalScale = new Vector2(transform.localScale.x, transform.localScale.y);
-	}
-
-	void OnTriggerEnter2D(Collider2D collider)
-	{
-		if (collider.CompareTag("OverWater"))
-		{
-			bOverWater = true;
-		}
-	}
-	
-	void OnTriggerExit2D(Collider2D collider)
-	{
-		if (collider.CompareTag("OverWater"))
-		{
-			bOverWater = false;
-
-			Vector3 shipUpVec = transform.rotation * Vector3.up;
-			Vector2 shipUpVec2 = new Vector2(shipUpVec.x, shipUpVec.y);
-			
-			float dot = Vector2.Dot (Vector2.up, shipUpVec2);
-			
-			if (dot < 0.5f)
-			{
-				bIsSinking = true;
-			}
-		}
 	}
 }
