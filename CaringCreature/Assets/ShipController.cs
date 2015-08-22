@@ -44,14 +44,7 @@ public class ShipController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		if (bOverWater)
-		{
-			bOverWater = transform.position.y > (WaterLineY - WaterDetectionThreshold);
-		}
-		else
-		{
-			bOverWater = transform.position.y > (WaterLineY + WaterDetectionThreshold);
-		}
+		bOverWater = transform.position.y > WaterLineY;
 
 		Vector3 shipUpVec = transform.rotation * Vector3.up;
 		Vector2 shipUpVec2 = new Vector2(shipUpVec.x, shipUpVec.y);
