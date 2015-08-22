@@ -4,6 +4,7 @@ using System.Collections;
 public class PlayerController : MonoBehaviour 
 {
 	private Rigidbody2D RBComp;
+	private SpriteRenderer SpriteComp;
 
 	public float ClickForceStrength = 0.25f;
 	public float MaxVelocity = 2.0f;
@@ -12,13 +13,20 @@ public class PlayerController : MonoBehaviour
 	public float OverWaterGravityScale = 0.35f;
 	public float UnderWaterGravityScale = 0.05f;
 
+	public Sprite NormalSprite;
+	public Sprite MouthOpenSprite;
+
 	private bool bOverWater = false;
+	private bool bMouthOpen = false;
+	public int ShipsInStomach = 0;
 
 	// Use this for initialization
 	void Start () 
 	{
 		RBComp = GetComponent<Rigidbody2D>();
 		RBComp.gravityScale = UnderWaterGravityScale;
+
+		SpriteComp = GetComponent<SpriteRenderer>();
 	}
 	
 	// Update is called once per frame
@@ -58,6 +66,9 @@ public class PlayerController : MonoBehaviour
 		}
 
 		Debug.DrawLine(transform.position, cursorPosVec3, debugLineCol);
+
+		bMouthOpen = Input.GetMouseButton(1);
+		SpriteComp.sprite = bMouthOpen ? MouthOpenSprite : NormalSprite;
 	}
 
 	void OnTriggerEnter2D(Collider2D collider)
@@ -75,6 +86,16 @@ public class PlayerController : MonoBehaviour
 		{
 			bOverWater = false;
 			RBComp.gravityScale = UnderWaterGravityScale;
+		}
+	}
+
+	void OnCollisionEnter2D(Collision2D collision)
+	{
+		if (collision.gameObject.CompareTag("Ship") && bMouthOpen && bOverWater && RBComp.velocity.y <= 0)
+		{
+			ShipController ship = collision.gameObject.GetComponent<ShipController>();
+			ship.EatenBy = this;
+			ship.SendMessage("Eaten");
 		}
 	}
 }
