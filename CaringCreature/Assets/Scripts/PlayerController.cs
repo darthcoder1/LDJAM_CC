@@ -236,4 +236,11 @@ public class PlayerController : MonoBehaviour
 	{
 		Application.LoadLevel(Application.loadedLevel);
 	}
+
+	void OnTriggerEnter2D(Collider2D coll)
+	{
+		if (coll.gameObject.CompareTag("Harpoon"))
+		{
+		}
+	}
 }
