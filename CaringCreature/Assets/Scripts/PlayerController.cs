@@ -38,9 +38,6 @@ public class PlayerController : MonoBehaviour
 
 	private Vector2 CurPlayerDir;
 
-	public float VomitDotHigherThan = 0.8f;
-	public float VomitRange = 40.0f;
-
 	// Use this for initialization
 	void Start () 
 	{
@@ -88,7 +85,14 @@ public class PlayerController : MonoBehaviour
 		{
 			if (Input.GetMouseButton(0))
 			{
-				Vector2 forceDir = (cursorPos - playerPos).normalized;
+				Vector2 forceDir = (cursorPos - playerPos);
+				float dirLen = forceDir.magnitude;
+				forceDir.Normalize();
+
+				if (dirLen < 5.0f)
+				{
+					forceDir = CurPlayerDir;
+				}
 				
 				RBComp.AddForce(forceDir * ClickForceStrength, ForceMode2D.Impulse);
 				if (RBComp.velocity.magnitude > MaxVelocity)
@@ -189,19 +193,16 @@ public class PlayerController : MonoBehaviour
 		GameObject NestObj = GameObject.FindGameObjectWithTag("Nest");
 		NestScript Nest = NestObj.GetComponent<NestScript>();
 
-		Vector3 dirToNestVec3 = (Nest.transform.position - transform.position);
-		float distanceToNest = dirToNestVec3.magnitude;
-		dirToNestVec3.Normalize();
-		Vector2 dirToNest = new Vector2(dirToNestVec3.x, dirToNestVec3.y);
+		Collider2D[] collObjs = Physics2D.OverlapPointAll(VomitPS.transform.position);
 
-		float dot = Vector2.Dot (CurPlayerDir, dirToNest);
-
-		if (dot > VomitDotHigherThan && distanceToNest < VomitRange)
+		foreach (Collider2D coll in collObjs)
 		{
-			++ShipsFed;
-			Nest.SendMessage("Feed");
+			if (coll.gameObject.CompareTag("Nest"))
+			{
+				++ShipsFed;
+				Nest.SendMessage("Feed");
+			}
 		}
-
 	}
 
 	void FinishVomit()

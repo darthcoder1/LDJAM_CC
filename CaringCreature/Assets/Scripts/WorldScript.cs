@@ -9,7 +9,7 @@ public class WorldScript : MonoBehaviour
 	private GameObject Player;
 	private GameObject Nest;
 
-	public float SpawnIntervalForFish = 2.0f;
+	public float SpawnIntervalForFish = 4.0f;
 	private float LastSpawnedFishTime = 0.0f;
 
 	private string[] FishPrefabs;

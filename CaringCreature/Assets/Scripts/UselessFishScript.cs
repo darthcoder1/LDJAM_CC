@@ -21,12 +21,11 @@ public class UselessFishScript : MonoBehaviour
 			GameObject.Destroy(gameObject);
 		}
 
-		if (Direction.x < 0)
-		{
-			float scale = Mathf.Clamp(Random.value + 0.5f, 0.3f, 1.2f);
-			Vector3 addScale = new Vector3(transform.localScale.x * -1.0f *scale, transform.localScale.y*scale, transform.localScale.z*scale);
-			transform.localScale = addScale;
-		}
+		float scale = Mathf.Clamp(Random.value, 0.1f, 0.5f);
+		Vector3 addScale = new Vector3(transform.localScale.x * Mathf.Sign(Direction.x) * scale, transform.localScale.y*scale, transform.localScale.z*scale);
+		transform.localScale = addScale;
+
+		GetComponent<SpriteRenderer>().color = new Color(255,255,255,100);
 	}
 	
 	// Update is called once per frame

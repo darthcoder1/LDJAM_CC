@@ -20,7 +20,7 @@ public class NestScript : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		Hunger -= HungerPerSecond * Time.deltaTime;
+		Hunger = Mathf.Max(Hunger - HungerPerSecond * Time.deltaTime, 0);
 
 		if (HungerDisplay)
 		{
@@ -29,6 +29,7 @@ public class NestScript : MonoBehaviour
 
 		if (Hunger <= 0)
 		{
+			GetComponent<Animator>().SetTrigger("IsDead");
 			PC.SendMessage("GameOver");
 		}
 	}
