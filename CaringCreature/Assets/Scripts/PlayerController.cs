@@ -5,7 +5,6 @@ using System.Collections;
 public class PlayerController : MonoBehaviour 
 {
 	private Rigidbody2D RBComp;
-	private SpriteRenderer SpriteComp;
 
 	public Text GameOverScreen;
 	public Text ShipsDestroyedDisplay;
@@ -26,10 +25,6 @@ public class PlayerController : MonoBehaviour
 	public ParticleSystem VomitPS;
 	public int WaterLineY;
 	public int WaterDetectionThreshold;
-	
-	public Sprite NormalSprite;
-	public Sprite MouthOpenSprite;
-	public Sprite FatSprite;
 
 	public PolygonCollider2D NormalCollider;
 	public PolygonCollider2D MouthOpenCollider;
@@ -38,6 +33,8 @@ public class PlayerController : MonoBehaviour
 	private bool bOverWater = false;
 	private bool bMouthOpen = false;
 	public bool bShipEaten = false;
+
+	private Animator AnimCtrl;
 
 	private Vector2 CurPlayerDir;
 
@@ -50,8 +47,7 @@ public class PlayerController : MonoBehaviour
 		RBComp = GetComponent<Rigidbody2D>();
 		RBComp.gravityScale = UnderWaterGravityScale;
 
-		SpriteComp = GetComponent<SpriteRenderer>();
-
+		AnimCtrl = GetComponent<Animator>();
 		bShipEaten = false;
 	}
 	
@@ -138,23 +134,42 @@ public class PlayerController : MonoBehaviour
 
 	void UpdateGfx()
 	{
+		AnimCtrl.SetBool("bMouthOpen", bMouthOpen);
+		AnimCtrl.SetBool("bIsFat", bShipEaten);
+	
+		if (RBComp.velocity.magnitude > 0.1)
+		{
+			Vector3 dir = transform.rotation * Vector3.right;
+			Vector2 dir2 = new Vector2(dir.x, dir.y);
+			
+			float angle = Vector2.Angle(Vector2.right, dir2);
+			
+			//AnimCtrl.SetFloat("animAngle", angle);
+			if (dir2.x < 0)
+			{
+				transform.localRotation *= Quaternion.Euler(180, 0, 0);
+			}
+			else
+			{
+				transform.localRotation *= Quaternion.Euler(0, 0, 0);
+			}
+		}
+
+
 		if (bMouthOpen)
 		{
-			SpriteComp.sprite = MouthOpenSprite;
 			NormalCollider.enabled = false;
 			FatCollider.enabled = false;
 			MouthOpenCollider.enabled = true;
 		}
 		else if (bShipEaten)
 		{
-			SpriteComp.sprite = FatSprite;
 			NormalCollider.enabled = false;
 			FatCollider.enabled = true;
 			MouthOpenCollider.enabled = false;
 		}
 		else 
 		{
-			SpriteComp.sprite = NormalSprite;
 			NormalCollider.enabled = true;
 			FatCollider.enabled = false;
 			MouthOpenCollider.enabled = false;
