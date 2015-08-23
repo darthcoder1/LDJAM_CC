@@ -142,9 +142,6 @@ public class PlayerController : MonoBehaviour
 			Vector3 dir = transform.rotation * Vector3.right;
 			Vector2 dir2 = new Vector2(dir.x, dir.y);
 			
-			float angle = Vector2.Angle(Vector2.right, dir2);
-			
-			//AnimCtrl.SetFloat("animAngle", angle);
 			if (dir2.x < 0)
 			{
 				transform.localRotation *= Quaternion.Euler(180, 0, 0);
