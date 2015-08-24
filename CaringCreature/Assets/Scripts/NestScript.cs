@@ -107,12 +107,15 @@ public class NestScript : MonoBehaviour
 	void PlayEatingSound()
 	{
 		AudioComp.clip = MunchingSounds[Random.Range (0, MunchingSounds.Length)];
+		AudioComp.loop = true;
 		AudioComp.Play();
 	}
 
 	void StopFeeding()
 	{
 		bIsEating = false;
+		AudioComp.Stop();
+		AudioComp.loop = false;
 	}
 
 	void BabiesGrow()

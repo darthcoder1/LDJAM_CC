@@ -238,7 +238,7 @@ public class PlayerController : MonoBehaviour
 	void StartVomit()
 	{
 		VomitPS.enableEmission = true;
-		Invoke ("FinishVomit", 1.0f);
+		Invoke ("FinishVomit", 3.0f);
 		bFeeding = true;
 		OpenMouth(false);
 
@@ -345,6 +345,7 @@ public class PlayerController : MonoBehaviour
 	void Die()
 	{
 		bIsGameOver = true;
+		RBComp.gravityScale = 2;
 		GameObject.FindGameObjectWithTag("World").SendMessage("TriggerExtro_CreatureDied");
 	}
 }
