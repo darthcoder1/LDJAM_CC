@@ -69,6 +69,7 @@ public class PlayerController : MonoBehaviour
 	{
 		if (WorldInfo.State != WorldScript.WorldState.Game)
 		{
+			UpdateGfx();
 			return;
 		}
 

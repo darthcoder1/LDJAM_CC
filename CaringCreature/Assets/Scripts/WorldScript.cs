@@ -122,17 +122,17 @@ public class WorldScript : MonoBehaviour
 			mainCam.GetComponent<CameraScript>().target = NestObj;
 			/*ExtroMessage.text = "Your babies starved to death ... ";
 			ExtroMessage.enabled = true;*/
-			Invoke ("WaitForRestart", 2.0f);
+			Invoke ("WaitForRestart", 8.0f);
 			break;
 		case EndState.CreatureDied:
 			/*ExtroMessage.text = "You died! And your babies will follow you soon ... ";
 			ExtroMessage.enabled = true;*/
-			Invoke ("WaitForRestart", 2.0f);
+			Invoke ("WaitForRestart", 8.0f);
 			break;
 		case EndState.BabiesSurvived:
 			mainCam.GetComponent<CameraScript>().target = NestObj;
 			NestObj.SendMessage("BabiesGrow");
-			Invoke ("WaitForRestart", 2.0f);
+			Invoke ("WaitForRestart", 8.0f);
 			break;
 		}
 	}
@@ -183,6 +183,7 @@ public class WorldScript : MonoBehaviour
 		}*/
 
 		int idx = Random.Range(0, SpawnPoints.Length-1);
+		bool bNormalShips = playerCtrl.ShipsFed < ShipsBeforeBoss-1;
 		Object prefab = playerCtrl.ShipsFed < ShipsBeforeBoss-1 ? Resources.Load("ship") : Resources.Load ("LongBoat_LEVEL2");
 		GameObject go = (GameObject)GameObject.Instantiate(prefab, SpawnPoints[idx].transform.position, SpawnPoints[idx].transform.rotation);
 		bSpawnInProgress = false;

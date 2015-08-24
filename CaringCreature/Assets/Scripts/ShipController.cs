@@ -56,11 +56,6 @@ public class ShipController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		if (WorldInfo.State != WorldScript.WorldState.Game)
-		{
-			return;
-		}
-
 		bOverWater = transform.position.y - 5 > WaterLineY;
 		bIsSinking = bIsSinking || transform.position.y < WaterLineY - 25;
 
@@ -120,7 +115,11 @@ public class ShipController : MonoBehaviour {
 			}
 		}
 
-		UpdateHarpoon();
+		if (WorldInfo.State == WorldScript.WorldState.Game)
+		{
+			UpdateHarpoon();
+		}
+
 		UpdateGfx();
 	}
 
