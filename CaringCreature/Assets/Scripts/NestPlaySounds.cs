@@ -21,6 +21,7 @@ public class NestPlaySounds : MonoBehaviour {
 		TimeSinceLastSoundPlayed += Time.deltaTime;
 		if (TimeSinceLastSoundPlayed >= SoundPlayInterval)
 		{
+			TimeSinceLastSoundPlayed = 0.0f;
 			sound[Random.Range(0,sound.Length)].Play();
 		}
 

@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
 	public int WaterLineY;
 	public int WaterDetectionThreshold;
 	public int MaxHits = 3;
+	public bool bSimpliefiedControls = true;
 
 	public PolygonCollider2D NormalCollider;
 	public PolygonCollider2D MouthOpenCollider;
@@ -116,23 +117,31 @@ public class PlayerController : MonoBehaviour
 
 		Debug.DrawLine(transform.position, cursorPosVec3, debugLineCol);
 
-		if (Input.GetMouseButtonDown(1))
+		if (!bSimpliefiedControls)
 		{
-			if (bShipEaten)
+			if (Input.GetMouseButtonDown(1))
 			{
-				++ShipsEaten;
-				// vomit
-				StartVomit();
+				if (bShipEaten)
+				{
+					++ShipsEaten;
+					// vomit
+					StartVomit();
+				}
+				else
+				{
+					bMouthOpen = true;
+				}
 			}
-			else
+			else if (Input.GetMouseButtonUp(1))
 			{
-				bMouthOpen = true;
+				bMouthOpen = false;
 			}
 		}
-		else if (Input.GetMouseButtonUp(1))
+		else
 		{
-			bMouthOpen = false;
+			bMouthOpen = bOverWater;
 		}
+
 
 		UpdateGfx();
 		UpdateScore();
