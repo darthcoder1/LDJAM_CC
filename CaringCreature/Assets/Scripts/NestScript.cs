@@ -51,9 +51,10 @@ public class NestScript : MonoBehaviour
 
 		Hunger = Mathf.Max(Hunger - HungerPerSecond * Time.deltaTime, 0);
 
+		bool bSurvived = PC.ShipsFed > WorldInfo.ShipsBeforeBoss;
 		AnimCtrl.SetBool("bIsDead", Hunger <= 0.0f);
-		AnimCtrl.SetBool("bIsEating", bIsEating);
-		AnimCtrl.SetBool("bSurvived", PC.ShipsFed > WorldInfo.ShipsBeforeBoss);
+		AnimCtrl.SetBool("bIsEating", bIsEating && !bSurvived);
+		AnimCtrl.SetBool("bSurvived", bSurvived);
 
 		if (HungerDisplay)
 		{
