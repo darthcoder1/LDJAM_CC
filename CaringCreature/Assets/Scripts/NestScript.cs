@@ -22,6 +22,8 @@ public class NestScript : MonoBehaviour
 	private WorldScript WorldInfo;
 	private bool bIsEating;
 
+	private GameObject[] GrownBabies;
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -31,6 +33,12 @@ public class NestScript : MonoBehaviour
 		AnimCtrl = GetComponent<Animator>();
 		AudioComp = GetComponent<AudioSource>();
 		WorldInfo = GameObject.FindGameObjectWithTag("World").GetComponent<WorldScript>();
+
+		GrownBabies = GameObject.FindGameObjectsWithTag("GrownBaby");
+		foreach(GameObject obj in GrownBabies)
+		{
+			obj.SetActive(false);
+		}
 	}
 	
 	// Update is called once per frame
@@ -45,6 +53,7 @@ public class NestScript : MonoBehaviour
 
 		AnimCtrl.SetBool("bIsDead", Hunger <= 0.0f);
 		AnimCtrl.SetBool("bIsEating", bIsEating);
+		AnimCtrl.SetBool("bSurvived", PC.ShipsFed >= WorldInfo.ShipsBeforeBoss);
 
 		if (HungerDisplay)
 		{
@@ -103,5 +112,13 @@ public class NestScript : MonoBehaviour
 	void StopFeeding()
 	{
 		bIsEating = false;
+	}
+
+	void BabiesGrow()
+	{
+		foreach(GameObject obj in GrownBabies)
+		{
+			obj.SetActive(true);
+		}
 	}
 }
