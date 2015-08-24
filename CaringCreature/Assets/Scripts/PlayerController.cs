@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
 	public ParticleSystem VomitPS;
 	public int WaterLineY;
 	public int WaterDetectionThreshold;
+	public int MaxHits = 3;
 
 	public PolygonCollider2D NormalCollider;
 	public PolygonCollider2D MouthOpenCollider;
@@ -37,6 +38,7 @@ public class PlayerController : MonoBehaviour
 	private Animator AnimCtrl;
 
 	private Vector2 CurPlayerDir;
+	private int ReceivedHits;
 
 	// Use this for initialization
 	void Start () 
@@ -241,6 +243,28 @@ public class PlayerController : MonoBehaviour
 	{
 		if (coll.gameObject.CompareTag("Harpoon"))
 		{
+			// move it deeper into the creature
+
+			float penetrationDepth = 1.0f;
+			Rigidbody2D HarpoonRB = coll.gameObject.GetComponent<Rigidbody2D>();
+			Vector2 harpoonDir = HarpoonRB.velocity.normalized;
+			coll.transform.position = new Vector3(coll.transform.position.x + harpoonDir.x * penetrationDepth,
+			                                      coll.transform.position.y + harpoonDir.y * penetrationDepth,
+			                                      coll.transform.position.z);
+
+			coll.transform.parent = gameObject.transform;
+			HarpoonRB.isKinematic = true;
+			coll.gameObject.GetComponent<PolygonCollider2D>().enabled = false;
+			if (++ReceivedHits >= MaxHits)
+			{
+				Die();
+			}
 		}
+	}
+
+	void Die()
+	{
+		bIsGameOver = true;
+		GameOver ();
 	}
 }
