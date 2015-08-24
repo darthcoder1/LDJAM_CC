@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
 	private bool bOverWater = false;
 	private bool bMouthOpen = false;
 	public bool bShipEaten = false;
+	private bool bFeeding = false;
 
 	private Animator AnimCtrl;
 
@@ -49,6 +50,10 @@ public class PlayerController : MonoBehaviour
 
 		AnimCtrl = GetComponent<Animator>();
 		bShipEaten = false;
+
+		ShipsDestroyed = 0;
+		ShipsEaten = 0;
+		ShipsFed = 0;
 	}
 	
 	// Update is called once per frame
@@ -86,7 +91,7 @@ public class PlayerController : MonoBehaviour
 		Color debugLineCol = Color.green;
 		if (!bOverWater)
 		{
-			if (Input.GetMouseButton(0))
+			if (Input.GetMouseButton(0) && !bFeeding)
 			{
 				Vector2 forceDir = (cursorPos - playerPos);
 				float dirLen = forceDir.magnitude;
@@ -200,19 +205,31 @@ public class PlayerController : MonoBehaviour
 		VomitPS.enableEmission = true;
 		Invoke ("FinishVomit", 1.0f);
 		bMouthOpen = true;
+		bFeeding = true;
 
-		GameObject NestObj = GameObject.FindGameObjectWithTag("Nest");
-		NestScript Nest = NestObj.GetComponent<NestScript>();
-
-		Collider2D[] collObjs = Physics2D.OverlapPointAll(VomitPS.transform.position);
-
-		foreach (Collider2D coll in collObjs)
+		if (!bSimpliefiedControls)
 		{
-			if (coll.gameObject.CompareTag("Nest"))
+			GameObject NestObj = GameObject.FindGameObjectWithTag("Nest");
+			NestScript Nest = NestObj.GetComponent<NestScript>();
+			
+			Collider2D[] collObjs = Physics2D.OverlapPointAll(VomitPS.transform.position);
+			
+			foreach (Collider2D coll in collObjs)
 			{
-				++ShipsFed;
-				Nest.SendMessage("Feed");
+				if (coll.gameObject.CompareTag("Nest"))
+				{
+					++ShipsFed;
+					Nest.SendMessage("Feed");
+				}
 			}
+		}
+		else
+		{
+			GameObject NestObj = GameObject.FindGameObjectWithTag("Nest");
+			NestScript Nest = NestObj.GetComponent<NestScript>();
+
+			++ShipsFed;
+			Nest.SendMessage("Feed");
 		}
 	}
 
@@ -221,9 +238,10 @@ public class PlayerController : MonoBehaviour
 		if (bShipEaten)
 		{
 			bShipEaten = false;
-			VomitPS.enableEmission = false;
 			bMouthOpen = false;
 		}
+		bFeeding = false;
+		VomitPS.enableEmission = false;
 	}
 
 	void OnCollisionEnter2D(Collision2D collision)
@@ -268,6 +286,10 @@ public class PlayerController : MonoBehaviour
 			{
 				Die();
 			}
+		}
+		else if (coll.gameObject.CompareTag("Nest"))
+		{
+			StartVomit();
 		}
 	}
 
