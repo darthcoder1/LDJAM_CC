@@ -16,6 +16,15 @@ public class WorldScript : MonoBehaviour
 	public int ShipsBeforeBoss = 4;
 	private string[] FishPrefabs;
 
+	enum WorldState
+	{
+		Intro,
+		Game,
+		Extro,
+	}
+
+	WorldState State;
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -27,10 +36,37 @@ public class WorldScript : MonoBehaviour
 		FishPrefabs[0] = "TrumpetFish";
 		FishPrefabs[1] = "Stupidwels";
 		FishPrefabs[2] = "Glotzfisch";
+
+		State = WorldState.Game;
 	}
-	
+
+	void Update()
+	{
+		switch (State)
+		{
+		case WorldState.Intro:
+			UpdateIntro();
+			break;
+		case WorldState.Game:
+			UpdateGame();
+			break;
+		case WorldState.Extro:
+			UpdateExtro();
+			break;
+		}
+	}
+
+	void UpdateIntro()
+	{
+
+	}
+
+	void UpdateExtro()
+	{
+		
+	}
 	// Update is called once per frame
-	void Update () 
+	void UpdateGame () 
 	{
 		GameObject[] AliveShips = GameObject.FindGameObjectsWithTag("Ship");
 
@@ -68,7 +104,7 @@ public class WorldScript : MonoBehaviour
 		}*/
 
 		int idx = Random.Range(0, SpawnPoints.Length-1);
-		Object prefab = playerCtrl.ShipsFed < ShipsBeforeBoss ? Resources.Load("LongBoat_LEVEL2") : Resources.Load ("LongBoat_LEVEL2");
+		Object prefab = playerCtrl.ShipsFed < ShipsBeforeBoss ? Resources.Load("ship") : Resources.Load ("LongBoat_LEVEL2");
 		GameObject go = (GameObject)GameObject.Instantiate(prefab, SpawnPoints[idx].transform.position, SpawnPoints[idx].transform.rotation);
 		bSpawnInProgress = false;
 	}
