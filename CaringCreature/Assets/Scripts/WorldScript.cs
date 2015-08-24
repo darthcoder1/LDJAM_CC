@@ -13,6 +13,7 @@ public class WorldScript : MonoBehaviour
 	public float ShipRespawnTimer = 3.0f;
 	private float LastSpawnedFishTime = 0.0f;
 
+	public int ShipsBeforeBoss = 4;
 	private string[] FishPrefabs;
 
 	// Use this for initialization
@@ -59,8 +60,15 @@ public class WorldScript : MonoBehaviour
 
 	void SpawnShip()
 	{
+		PlayerController playerCtrl = Player.GetComponent<PlayerController>();
+
+		/*if (playerCtrl.ShipsFed >= ShipsBeforeBoss + 1)
+		{
+			return;
+		}*/
+
 		int idx = Random.Range(0, SpawnPoints.Length-1);
-		Object prefab = Resources.Load("ship");
+		Object prefab = playerCtrl.ShipsFed < ShipsBeforeBoss ? Resources.Load("LongBoat_LEVEL2") : Resources.Load ("LongBoat_LEVEL2");
 		GameObject go = (GameObject)GameObject.Instantiate(prefab, SpawnPoints[idx].transform.position, SpawnPoints[idx].transform.rotation);
 		bSpawnInProgress = false;
 	}
