@@ -156,6 +156,7 @@ public class PlayerController : MonoBehaviour
 	{
 		AnimCtrl.SetBool("bMouthOpen", bMouthOpen);
 		AnimCtrl.SetBool("bIsFat", bShipEaten);
+		AnimCtrl.SetBool("bIsDead", ReceivedHits >= MaxHits);
 	
 		if (RBComp.velocity.magnitude > 0.1)
 		{
@@ -242,6 +243,10 @@ public class PlayerController : MonoBehaviour
 		}
 		bFeeding = false;
 		VomitPS.enableEmission = false;
+
+		GameObject NestObj = GameObject.FindGameObjectWithTag("Nest");
+		//NestScript Nest = NestObj.GetComponent<NestScript>();
+		NestObj.SendMessage("StopFeeding");
 	}
 
 	void OnCollisionEnter2D(Collision2D collision)
@@ -257,6 +262,7 @@ public class PlayerController : MonoBehaviour
 	void GameOver()
 	{
 		bIsGameOver = true;
+		GameOverScreen.text = "You died ...";
 		GameOverScreen.enabled = true;
 		Invoke("RestartMap", 3.0f);
 	}
@@ -287,7 +293,7 @@ public class PlayerController : MonoBehaviour
 				Die();
 			}
 		}
-		else if (coll.gameObject.CompareTag("Nest"))
+		else if (coll.gameObject.CompareTag("Nest") && bShipEaten)
 		{
 			StartVomit();
 		}

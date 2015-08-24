@@ -9,18 +9,25 @@ public class NestScript : MonoBehaviour
 
 	private float Hunger;
 	private PlayerController PC;
+	private Animator AnimCtrl;
+	private bool bIsEating;
 
 	// Use this for initialization
 	void Start () 
 	{
 		Hunger = 1.0f;
 		PC = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+
+		AnimCtrl = GetComponent<Animator>();
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
 		Hunger = Mathf.Max(Hunger - HungerPerSecond * Time.deltaTime, 0);
+
+		AnimCtrl.SetBool("bIsDead", Hunger <= 0.0f);
+		AnimCtrl.SetBool("bIsEating", bIsEating);
 
 		if (HungerDisplay)
 		{
@@ -29,13 +36,21 @@ public class NestScript : MonoBehaviour
 
 		if (Hunger <= 0)
 		{
-			GetComponent<Animator>().SetTrigger("IsDead");
 			PC.SendMessage("GameOver");
+
+			GameObject mainCam = GameObject.FindGameObjectWithTag("MainCamera");
+			//mainCam.Target = this;
 		}
 	}
 
 	void Feed()
 	{
 		Hunger = 1.0f;
+		bIsEating = true;
+	}
+
+	void StopFeeding()
+	{
+		bIsEating = false;
 	}
 }
