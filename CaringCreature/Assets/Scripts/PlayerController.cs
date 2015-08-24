@@ -230,9 +230,9 @@ public class PlayerController : MonoBehaviour
 
 	void UpdateScore()
 	{
-		ShipsDestroyedDisplay.text = "Ships Destroyed: " + ShipsDestroyed.ToString();
+		/*ShipsDestroyedDisplay.text = "Ships Destroyed: " + ShipsDestroyed.ToString();
 		ShipsEatenDisplay.text = "Ships Eaten: " + ShipsEaten.ToString();
-		ShipsFedDisplay.text = "Ships Fed: " + ShipsFed.ToString();
+		ShipsFedDisplay.text = "Ships Fed: " + ShipsFed.ToString();*/
 	}
 
 	void StartVomit()
