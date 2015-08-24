@@ -22,6 +22,8 @@ public class NestScript : MonoBehaviour
 	private WorldScript WorldInfo;
 	private bool bIsEating;
 
+	private bool bBabiesGrown;
+
 	private GameObject[] GrownBabies;
 
 	// Use this for initialization
@@ -120,9 +122,24 @@ public class NestScript : MonoBehaviour
 
 	void BabiesGrow()
 	{
+		if (!bBabiesGrown)
+		{
+			bBabiesGrown = true;
+			foreach(GameObject obj in GrownBabies)
+			{
+				obj.SetActive(true);
+			}
+			
+			//Invoke ("BabiesHide", 2.5f);
+		}
+	}
+
+	void BabiesHide()
+	{
 		foreach(GameObject obj in GrownBabies)
 		{
-			obj.SetActive(true);
+			obj.SetActive(false);
+			GameObject.DestroyImmediate(obj);
 		}
 	}
 }

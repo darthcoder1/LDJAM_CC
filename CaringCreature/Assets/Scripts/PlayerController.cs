@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour
 
 		ShipsDestroyed = 0;
 		ShipsEaten = 0;
-		ShipsFed = 0;
+		ShipsFed = 7;
 	}
 	
 	// Update is called once per frame
