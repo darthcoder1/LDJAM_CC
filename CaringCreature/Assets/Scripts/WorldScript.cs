@@ -93,7 +93,7 @@ public class WorldScript : MonoBehaviour
 			UpdateExtro();
 			break;
 		case WorldState.WaitForRestart:
-			RestartText.enabled = true;
+			/*RestartText.enabled = true;*/
 
 			if (Input.GetMouseButtonDown(0))
 			{
@@ -120,13 +120,13 @@ public class WorldScript : MonoBehaviour
 		{
 		case EndState.BabiesDied:
 			mainCam.GetComponent<CameraScript>().target = NestObj;
-			ExtroMessage.text = "Your babies starved to death ... ";
-			ExtroMessage.enabled = true;
+			/*ExtroMessage.text = "Your babies starved to death ... ";
+			ExtroMessage.enabled = true;*/
 			Invoke ("WaitForRestart", 2.0f);
 			break;
 		case EndState.CreatureDied:
-			ExtroMessage.text = "You died! And your babies will follow you soon ... ";
-			ExtroMessage.enabled = true;
+			/*ExtroMessage.text = "You died! And your babies will follow you soon ... ";
+			ExtroMessage.enabled = true;*/
 			Invoke ("WaitForRestart", 2.0f);
 			break;
 		case EndState.BabiesSurvived:

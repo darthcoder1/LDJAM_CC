@@ -61,7 +61,7 @@ public class ShipController : MonoBehaviour {
 			return;
 		}
 
-		bOverWater = transform.position.y > WaterLineY;
+		bOverWater = transform.position.y - 5 > WaterLineY;
 		bIsSinking = bIsSinking || transform.position.y < WaterLineY - 25;
 
 		Rigidbody2D RBComp = GetComponent<Rigidbody2D>();
