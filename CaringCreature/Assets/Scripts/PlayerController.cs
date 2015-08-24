@@ -320,7 +320,7 @@ public class PlayerController : MonoBehaviour
 		{
 			// move it deeper into the creature
 
-			float penetrationDepth = 1.0f;
+			float penetrationDepth = 2.5f;
 			Rigidbody2D HarpoonRB = coll.gameObject.GetComponent<Rigidbody2D>();
 			Vector2 harpoonDir = HarpoonRB.velocity.normalized;
 			coll.transform.position = new Vector3(coll.transform.position.x + harpoonDir.x * penetrationDepth,

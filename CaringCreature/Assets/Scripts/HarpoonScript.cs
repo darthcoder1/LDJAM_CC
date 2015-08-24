@@ -26,7 +26,7 @@ public class HarpoonScript : MonoBehaviour
 	{
 		if (!coll.gameObject.CompareTag ("Ship") && !coll.gameObject.CompareTag("Nest") && !coll.gameObject.CompareTag("Harpoon"))
 		{
-			float penetrationDepth = 1.0f;
+			float penetrationDepth = 2.5f;
 			Rigidbody2D HarpoonRB = RBComp;
 			Vector2 harpoonDir = HarpoonRB.velocity.normalized;
 			transform.position = new Vector3(transform.position.x + harpoonDir.x * penetrationDepth,
