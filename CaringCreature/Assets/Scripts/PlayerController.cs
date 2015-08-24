@@ -192,7 +192,7 @@ public class PlayerController : MonoBehaviour
 		AnimCtrl.SetBool("bIsFat", bShipEaten);
 		AnimCtrl.SetBool("bIsDead", ReceivedHits >= MaxHits);
 	
-		if (RBComp.velocity.magnitude > 0.1)
+		if (RBComp.velocity.magnitude > 0.1 && ReceivedHits < MaxHits)
 		{
 			Vector3 dir = transform.rotation * Vector3.right;
 			Vector2 dir2 = new Vector2(dir.x, dir.y);
@@ -302,6 +302,11 @@ public class PlayerController : MonoBehaviour
 				AudioComp.Play();
 			}
 		}
+		else
+		{
+			RBComp.velocity = Vector2.zero;
+			RBComp.Sleep();
+		}
 	}
 
 	void GameOver()
@@ -345,7 +350,7 @@ public class PlayerController : MonoBehaviour
 	void Die()
 	{
 		bIsGameOver = true;
-		RBComp.gravityScale = 2;
+		RBComp.gravityScale = 1;
 		GameObject.FindGameObjectWithTag("World").SendMessage("TriggerExtro_CreatureDied");
 	}
 }
