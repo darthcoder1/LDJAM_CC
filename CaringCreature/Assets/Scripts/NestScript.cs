@@ -58,12 +58,13 @@ public class NestScript : MonoBehaviour
 	void UpdateSFX()
 	{
 		HungerSoundLastPlayedTime += Time.deltaTime;
+
 		if (Hunger <= 0.01f && !bIsEating)
 		{
 			AudioComp.clip = DyingSounds[Random.Range (0, DyingSounds.Length)];
 			AudioComp.Play();
 		}
-		else if (HungerSoundLastPlayedTime > HungerSoundPlayInterval && !bIsEating)
+		else if (Hunger < 0.75f && HungerSoundLastPlayedTime > HungerSoundPlayInterval && !AudioComp.isPlaying)
 		{
 			HungerSoundLastPlayedTime = 0.0f;
 
@@ -86,9 +87,13 @@ public class NestScript : MonoBehaviour
 		Hunger = 1.0f;
 		bIsEating = true;
 
+		Invoke("PlayEatingSound", 0.5f);
+	}
+
+	void PlayEatingSound()
+	{
 		AudioComp.clip = MunchingSounds[Random.Range (0, MunchingSounds.Length)];
 		AudioComp.Play();
-		
 	}
 
 	void StopFeeding()

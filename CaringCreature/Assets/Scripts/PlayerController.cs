@@ -5,6 +5,7 @@ using System.Collections;
 public class PlayerController : MonoBehaviour 
 {
 	private Rigidbody2D RBComp;
+	private AudioSource AudioComp;
 
 	public Text GameOverScreen;
 	public Text ShipsDestroyedDisplay;
@@ -28,6 +29,10 @@ public class PlayerController : MonoBehaviour
 	public int MaxHits = 3;
 	public bool bSimpliefiedControls = true;
 
+	public AudioClip[] FeedingSounds;
+	public AudioClip[] SwallowingSounds;
+	public AudioClip[] MouthOpenSounds;
+
 	public PolygonCollider2D NormalCollider;
 	public PolygonCollider2D MouthOpenCollider;
 	public PolygonCollider2D FatCollider;
@@ -50,6 +55,8 @@ public class PlayerController : MonoBehaviour
 
 		AnimCtrl = GetComponent<Animator>();
 		bShipEaten = false;
+
+		AudioComp = GetComponent<AudioSource>();
 
 		ShipsDestroyed = 0;
 		ShipsEaten = 0;
@@ -134,7 +141,7 @@ public class PlayerController : MonoBehaviour
 				}
 				else
 				{
-					bMouthOpen = true;
+					OpenMouth(true);
 				}
 			}
 			else if (Input.GetMouseButtonUp(1))
@@ -144,12 +151,32 @@ public class PlayerController : MonoBehaviour
 		}
 		else
 		{
-			bMouthOpen = bOverWater;
+			if (bOverWater && !bShipEaten)
+			{
+				OpenMouth(true);
+			}
+			else
+			{
+				bMouthOpen = false;
+			}
 		}
 
 
 		UpdateGfx();
 		UpdateScore();
+	}
+
+	void OpenMouth(bool bPlaySound)
+	{
+		if (!bMouthOpen)
+		{
+			bMouthOpen = true;
+			if (bPlaySound)
+			{
+				AudioComp.clip = MouthOpenSounds[Random.Range(0, MouthOpenSounds.Length)];
+				AudioComp.Play();
+			}
+		}
 	}
 
 	void UpdateGfx()
@@ -205,8 +232,11 @@ public class PlayerController : MonoBehaviour
 	{
 		VomitPS.enableEmission = true;
 		Invoke ("FinishVomit", 1.0f);
-		bMouthOpen = true;
 		bFeeding = true;
+		OpenMouth(false);
+
+		AudioComp.clip = FeedingSounds[Random.Range (0, FeedingSounds.Length)];
+		AudioComp.Play();
 
 		if (!bSimpliefiedControls)
 		{
@@ -256,6 +286,11 @@ public class PlayerController : MonoBehaviour
 			ShipController ship = collision.gameObject.GetComponent<ShipController>();
 			ship.EatenBy = this;
 			ship.SendMessage("Eaten");
+			bShipEaten = true;
+			bMouthOpen = false;
+
+			AudioComp.clip = SwallowingSounds[Random.Range (0, SwallowingSounds.Length)];
+			AudioComp.Play();
 		}
 	}
 
