@@ -16,8 +16,11 @@ public class ShipController : MonoBehaviour {
 
 	private Rigidbody2D RBComp;
 	private Animator AnimCtrl;
+	private AudioSource AudioComp;
+
 	public float WaterFrictionFactor = 0.05f;
 	public float HarpoonReloadTime = 3.0f;
+	public float HarpoonThrowTime = 2.0f;
 
 	public float UpwardForce = 25.0f; // 9.81 is the opposite of the default gravity, which is 9.81. If we want the boat not to behave like a submarine the upward force has to be higher than the gravity in order to push the boat to the surface
 
@@ -26,12 +29,15 @@ public class ShipController : MonoBehaviour {
 
 	private float Direction;
 
+	public AudioClip[] HarpoonSounds;
+
 
 	// Use this for initialization
 	void Start () 
 	{
 		RBComp = GetComponent<Rigidbody2D>();
 		AnimCtrl = GetComponent<Animator>();
+		AudioComp = GetComponent<AudioSource>();
 
 		EatenBy = null;
 
@@ -118,7 +124,7 @@ public class ShipController : MonoBehaviour {
 		if (bHasHarpoon && !bIsThrowing)
 		{
 			bIsThrowing = true;
-			Invoke ("ThrowHarpoon", 2.0f);
+			Invoke ("ThrowHarpoon", HarpoonThrowTime);
 		}
 		else if (!bIsReloading)
 		{
@@ -186,6 +192,9 @@ public class ShipController : MonoBehaviour {
 
 			go.GetComponent<Rigidbody2D>().velocity = calculateBestThrowSpeed(harpoonTransform.position, obj.transform.position, 5);
 			bHasHarpoon = false;
+
+			AudioComp.clip = HarpoonSounds[Random.Range(0,HarpoonSounds.Length)];
+			AudioComp.Play ();
 		}
 	}
 

@@ -19,6 +19,12 @@ public class VolumeScaler : MonoBehaviour
 		float dist = (Player.transform.position - transform.position).magnitude;
 
 		float volume = 1.0f - Mathf.Clamp(dist / HearingDistance,  0, 1);
-		GetComponent<AudioSource> ().volume = volume;
+		AudioSource[] components = GetComponents<AudioSource> ();
+
+		foreach(AudioSource comp in components)
+		{
+			comp.volume = volume;
+			comp.enabled = volume > 0;
+		}
 	}
 }
