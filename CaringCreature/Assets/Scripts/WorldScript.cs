@@ -68,12 +68,12 @@ public class WorldScript : MonoBehaviour
 		Player = GameObject.FindGameObjectWithTag("Player");
 		Nest = GameObject.FindGameObjectWithTag("Nest");
 
-		FishPrefabs = new string[4];
+		FishPrefabs = new string[5];
 		FishPrefabs[0] = "TrumpetFish";
 		FishPrefabs[1] = "Stupidwels";
 		FishPrefabs[2] = "Glotzfisch";
 		FishPrefabs[3] = "Krakenkatze";
-
+		FishPrefabs[4] = "Korkenzieherfisch";
 
 		State = WorldState.Game;
 	}
