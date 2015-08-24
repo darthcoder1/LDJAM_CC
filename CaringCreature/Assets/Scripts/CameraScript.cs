@@ -7,12 +7,13 @@ public class CameraScript : MonoBehaviour {
 
 	private GameObject PlayerObj;
 	private Vector2 CurrentVelocity;
+	public GameObject target;
 
 	// Use this for initialization
 	void Start () 
 	{
 		PlayerObj = GameObject.FindGameObjectWithTag("Player");
-
+		target = PlayerObj;
 		// set initial camara 
 		transform.position = new Vector3(PlayerObj.transform.position.x, PlayerObj.transform.position.y, transform.position.z);
 	}
@@ -21,8 +22,10 @@ public class CameraScript : MonoBehaviour {
 	void Update () 
 	{
 		Vector2 camPos = new Vector2(transform.position.x, transform.position.y);
-		Vector2 playerPos = new Vector2(PlayerObj.transform.position.x, PlayerObj.transform.position.y);
+		Vector2 playerPos = new Vector2(target.transform.position.x, target.transform.position.y);
 		Vector2 interp = Vector2.SmoothDamp(camPos, playerPos, ref CurrentVelocity, DampingFactor);
 		transform.position = new Vector3(interp.x, interp.y, transform.position.z);
 	}
+
+
 }
