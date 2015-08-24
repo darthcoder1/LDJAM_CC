@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class WorldScript : MonoBehaviour 
 {
+	public Text ExtroMessage;
+	public Text RestartText;
 	private GameObject[] SpawnPoints;
 	private bool bSpawnInProgress = false;
 
@@ -16,14 +19,47 @@ public class WorldScript : MonoBehaviour
 	public int ShipsBeforeBoss = 4;
 	private string[] FishPrefabs;
 
-	enum WorldState
+	public enum WorldState
 	{
 		Intro,
 		Game,
 		Extro,
+		WaitForRestart,
+		Restart,
 	}
 
-	WorldState State;
+	enum EndState
+	{
+		BabiesSurvived,
+		CreatureDied,
+		BabiesDied,
+	}
+
+	public WorldState State;
+	EndState EndStatus;
+
+	void WaitForRestart()
+	{
+		State = WorldState.WaitForRestart;
+	}
+
+	void TriggerExtro_Survived()
+	{
+		EndStatus = EndState.BabiesSurvived;
+		State = WorldState.Extro;
+	}
+
+	void TriggerExtro_BabiesDied()
+	{
+		EndStatus = EndState.BabiesDied;
+		State = WorldState.Extro;
+	}
+
+	void TriggerExtro_CreatureDied()
+	{
+		EndStatus = EndState.CreatureDied;
+		State = WorldState.Extro;
+	}
 
 	// Use this for initialization
 	void Start () 
@@ -53,6 +89,17 @@ public class WorldScript : MonoBehaviour
 		case WorldState.Extro:
 			UpdateExtro();
 			break;
+		case WorldState.WaitForRestart:
+			RestartText.enabled = true;
+
+			if (Input.GetMouseButtonDown(0))
+			{
+				State = WorldState.Restart;
+			}
+			break;
+		case WorldState.Restart:
+			Application.LoadLevel(Application.loadedLevel);
+			break;
 		}
 	}
 
@@ -63,11 +110,40 @@ public class WorldScript : MonoBehaviour
 
 	void UpdateExtro()
 	{
-		
+		GameObject NestObj = GameObject.FindGameObjectWithTag("Nest");
+		GameObject mainCam = GameObject.FindGameObjectWithTag("MainCamera");
+
+		switch (EndStatus)
+		{
+		case EndState.BabiesDied:
+			mainCam.GetComponent<CameraScript>().target = NestObj;
+			ExtroMessage.text = "Your babies starved to death ... ";
+			ExtroMessage.enabled = true;
+			Invoke ("WaitForRestart", 2.0f);
+			break;
+		case EndState.CreatureDied:
+			ExtroMessage.text = "You died! And your babies will follow you soon ... ";
+			ExtroMessage.enabled = true;
+			Invoke ("WaitForRestart", 2.0f);
+			break;
+		case EndState.BabiesSurvived:
+			mainCam.GetComponent<CameraScript>().target = NestObj;
+			NestObj.SendMessage("BabiesGrow");
+			Invoke ("WaitForRestart", 2.0f);
+			break;
+		}
 	}
+
 	// Update is called once per frame
 	void UpdateGame () 
 	{
+		PlayerController playerCtrl = Player.GetComponent<PlayerController>();
+		
+		if (playerCtrl.ShipsFed >= ShipsBeforeBoss)
+		{
+			TriggerExtro_Survived();
+		}
+
 		GameObject[] AliveShips = GameObject.FindGameObjectsWithTag("Ship");
 
 		if (!bSpawnInProgress && (AliveShips == null || AliveShips.Length <= 0))

@@ -19,6 +19,7 @@ public class NestScript : MonoBehaviour
 	private PlayerController PC;
 	private Animator AnimCtrl;
 	private AudioSource AudioComp;
+	private WorldScript WorldInfo;
 	private bool bIsEating;
 
 	// Use this for initialization
@@ -29,11 +30,17 @@ public class NestScript : MonoBehaviour
 
 		AnimCtrl = GetComponent<Animator>();
 		AudioComp = GetComponent<AudioSource>();
+		WorldInfo = GameObject.FindGameObjectWithTag("World").GetComponent<WorldScript>();
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
+		if (WorldInfo.State != WorldScript.WorldState.Game)
+		{
+			return;
+		}
+
 		Hunger = Mathf.Max(Hunger - HungerPerSecond * Time.deltaTime, 0);
 
 		AnimCtrl.SetBool("bIsDead", Hunger <= 0.0f);
@@ -46,10 +53,7 @@ public class NestScript : MonoBehaviour
 
 		if (Hunger <= 0)
 		{
-			PC.SendMessage("GameOver");
-
-			GameObject mainCam = GameObject.FindGameObjectWithTag("MainCamera");
-			mainCam.GetComponent<CameraScript>().target = gameObject;
+			GameObject.FindGameObjectWithTag("World").SendMessage("TriggerExtro_BabiesDied");
 		}
 
 		UpdateSFX();

@@ -6,8 +6,8 @@ public class PlayerController : MonoBehaviour
 {
 	private Rigidbody2D RBComp;
 	private AudioSource AudioComp;
+	private WorldScript WorldInfo;
 
-	public Text GameOverScreen;
 	public Text ShipsDestroyedDisplay;
 	public Text ShipsEatenDisplay;
 	public Text ShipsFedDisplay;
@@ -57,6 +57,7 @@ public class PlayerController : MonoBehaviour
 		bShipEaten = false;
 
 		AudioComp = GetComponent<AudioSource>();
+		WorldInfo = GameObject.FindGameObjectWithTag("World").GetComponent<WorldScript>();
 
 		ShipsDestroyed = 0;
 		ShipsEaten = 0;
@@ -66,6 +67,11 @@ public class PlayerController : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
+		if (WorldInfo.State != WorldScript.WorldState.Game)
+		{
+			return;
+		}
+
 		Debug.DrawLine(new Vector3(-1000, WaterLineY, transform.position.z),
 		               new Vector3( 1000, WaterLineY, transform.position.z),
 		               Color.black);
@@ -297,8 +303,6 @@ public class PlayerController : MonoBehaviour
 	void GameOver()
 	{
 		bIsGameOver = true;
-		GameOverScreen.text = "You died ...";
-		GameOverScreen.enabled = true;
 		Invoke("RestartMap", 3.0f);
 	}
 
@@ -337,6 +341,6 @@ public class PlayerController : MonoBehaviour
 	void Die()
 	{
 		bIsGameOver = true;
-		GameOver ();
+		GameObject.FindGameObjectWithTag("World").SendMessage("TriggerExtro_CreatureDied");
 	}
 }

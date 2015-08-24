@@ -17,6 +17,7 @@ public class ShipController : MonoBehaviour {
 	private Rigidbody2D RBComp;
 	private Animator AnimCtrl;
 	private AudioSource AudioComp;
+	private WorldScript WorldInfo;
 
 	public float WaterFrictionFactor = 0.05f;
 	public float HarpoonReloadTime = 3.0f;
@@ -43,6 +44,7 @@ public class ShipController : MonoBehaviour {
 
 		GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
 		PlayerController pc = playerObj.GetComponent<PlayerController>();
+		WorldInfo = GameObject.FindGameObjectWithTag("World").GetComponent<WorldScript>();
 
 		WaterLineY = pc.WaterLineY;
 
@@ -54,6 +56,11 @@ public class ShipController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
+		if (WorldInfo.State != WorldScript.WorldState.Game)
+		{
+			return;
+		}
+
 		bOverWater = transform.position.y > WaterLineY;
 		bIsSinking = bIsSinking || transform.position.y < WaterLineY - 25;
 
