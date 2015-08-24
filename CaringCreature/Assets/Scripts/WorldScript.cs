@@ -10,6 +10,7 @@ public class WorldScript : MonoBehaviour
 	private GameObject Nest;
 
 	public float SpawnIntervalForFish = 4.0f;
+	public float ShipRespawnTimer = 3.0f;
 	private float LastSpawnedFishTime = 0.0f;
 
 	private string[] FishPrefabs;
@@ -35,7 +36,7 @@ public class WorldScript : MonoBehaviour
 		if (!bSpawnInProgress && (AliveShips == null || AliveShips.Length <= 0))
 		{
 			bSpawnInProgress = true;
-			Invoke("SpawnShip", 3.0f);
+			Invoke("SpawnShip", ShipRespawnTimer);
 		}
 
 		LastSpawnedFishTime += Time.deltaTime;

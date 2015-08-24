@@ -39,7 +39,7 @@ public class NestScript : MonoBehaviour
 			PC.SendMessage("GameOver");
 
 			GameObject mainCam = GameObject.FindGameObjectWithTag("MainCamera");
-			//mainCam.Target = this;
+			mainCam.GetComponent<CameraScript>().target = gameObject;
 		}
 	}
 
