@@ -17,11 +17,9 @@ public class ShipController : MonoBehaviour {
 	private Rigidbody2D RBComp;
 	private Animator AnimCtrl;
 	public float WaterFrictionFactor = 0.05f;
-	public float OverWaterGravityScale = 0.35f;
-	public float UnderWaterGravityScale = -0.35f;
 	public float HarpoonReloadTime = 3.0f;
 
-	public float UpwardForce = 3.0f; // 9.81 is the opposite of the default gravity, which is 9.81. If we want the boat not to behave like a submarine the upward force has to be higher than the gravity in order to push the boat to the surface
+	public float UpwardForce = 25.0f; // 9.81 is the opposite of the default gravity, which is 9.81. If we want the boat not to behave like a submarine the upward force has to be higher than the gravity in order to push the boat to the surface
 
 	private int WaterLineY;
 	private int WaterDetectionThreshold;
@@ -33,8 +31,6 @@ public class ShipController : MonoBehaviour {
 	void Start () 
 	{
 		RBComp = GetComponent<Rigidbody2D>();
-		RBComp.gravityScale = OverWaterGravityScale;
-
 		AnimCtrl = GetComponent<Animator>();
 
 		EatenBy = null;
@@ -53,9 +49,10 @@ public class ShipController : MonoBehaviour {
 	void Update () 
 	{
 		bOverWater = transform.position.y > WaterLineY;
+		bIsSinking = bIsSinking || transform.position.y < WaterLineY - 25;
 
 		Rigidbody2D RBComp = GetComponent<Rigidbody2D>();
-		if (RBComp)
+		if (RBComp && !bIsSinking && !bOverWater)
 		{
 			RBComp.AddForce(new Vector2(Direction, 0.0f));
 		}
@@ -73,7 +70,6 @@ public class ShipController : MonoBehaviour {
 		if (dot < 0.5f && !bIsSinking)
 		{
 			bIsSinking = true;
-			AnimCtrl.SetTrigger("Sinking");
 
 			PlayerController PC = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
 			++PC.ShipsDestroyed;
@@ -202,6 +198,7 @@ public class ShipController : MonoBehaviour {
 	void UpdateGfx()
 	{
 		AnimCtrl.SetBool("bHasHarpoon", bHasHarpoon);
+		AnimCtrl.SetBool("bIsSinking", bIsSinking);
 	}
 	
 	void Eaten()
