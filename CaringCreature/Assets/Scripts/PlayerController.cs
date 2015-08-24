@@ -187,7 +187,7 @@ public class PlayerController : MonoBehaviour
 
 	void UpdateGfx()
 	{
-		AnimCtrl.SetBool("bMouthOpen", bMouthOpen);
+		AnimCtrl.SetBool("bMouthOpen", bMouthOpen || bFeeding);
 		AnimCtrl.SetBool("bIsFat", bShipEaten);
 		AnimCtrl.SetBool("bIsDead", ReceivedHits >= MaxHits);
 	
