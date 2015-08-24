@@ -142,7 +142,7 @@ public class WorldScript : MonoBehaviour
 	{
 		PlayerController playerCtrl = Player.GetComponent<PlayerController>();
 		
-		if (playerCtrl.ShipsFed >= ShipsBeforeBoss)
+		if (playerCtrl.ShipsFed > ShipsBeforeBoss)
 		{
 			TriggerExtro_Survived();
 		}
@@ -183,7 +183,7 @@ public class WorldScript : MonoBehaviour
 		}*/
 
 		int idx = Random.Range(0, SpawnPoints.Length-1);
-		Object prefab = playerCtrl.ShipsFed < ShipsBeforeBoss ? Resources.Load("ship") : Resources.Load ("LongBoat_LEVEL2");
+		Object prefab = playerCtrl.ShipsFed < ShipsBeforeBoss-1 ? Resources.Load("ship") : Resources.Load ("LongBoat_LEVEL2");
 		GameObject go = (GameObject)GameObject.Instantiate(prefab, SpawnPoints[idx].transform.position, SpawnPoints[idx].transform.rotation);
 		bSpawnInProgress = false;
 	}

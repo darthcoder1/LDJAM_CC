@@ -290,13 +290,16 @@ public class PlayerController : MonoBehaviour
 		if (collision.gameObject.CompareTag("Ship") && bMouthOpen && bOverWater && !bShipEaten && RBComp.velocity.y <= 0)
 		{
 			ShipController ship = collision.gameObject.GetComponent<ShipController>();
-			ship.EatenBy = this;
-			ship.SendMessage("Eaten");
-			bShipEaten = true;
-			bMouthOpen = false;
-
-			AudioComp.clip = SwallowingSounds[Random.Range (0, SwallowingSounds.Length)];
-			AudioComp.Play();
+			if (!ship.bIsSinking)
+			{
+				ship.EatenBy = this;
+				ship.SendMessage("Eaten");
+				bShipEaten = true;
+				bMouthOpen = false;
+				
+				AudioComp.clip = SwallowingSounds[Random.Range (0, SwallowingSounds.Length)];
+				AudioComp.Play();
+			}
 		}
 	}
 

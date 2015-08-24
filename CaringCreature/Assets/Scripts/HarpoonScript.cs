@@ -24,7 +24,7 @@ public class HarpoonScript : MonoBehaviour
 
 	void OnTriggerEnter2D(Collider2D coll)
 	{
-		if (!coll.gameObject.CompareTag ("Ship") && !coll.gameObject.CompareTag("Nest"))
+		if (!coll.gameObject.CompareTag ("Ship") && !coll.gameObject.CompareTag("Nest") && !coll.gameObject.CompareTag("Harpoon"))
 		{
 			float penetrationDepth = 1.0f;
 			Rigidbody2D HarpoonRB = RBComp;

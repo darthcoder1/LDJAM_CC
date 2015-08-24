@@ -4,7 +4,7 @@ using System.Collections;
 public class ShipController : MonoBehaviour {
 
 	private bool bOverWater;
-	private bool bIsSinking;
+	public bool bIsSinking;
 	private bool bHasHarpoon;
 
 	private bool bIsThrowing;
@@ -128,7 +128,7 @@ public class ShipController : MonoBehaviour {
 	{
 		if (bIsSinking) { return; }
 
-		if (bHasHarpoon && !bIsThrowing)
+		if (bHasHarpoon && !bIsThrowing && EatenBy == null)
 		{
 			bIsThrowing = true;
 			Invoke ("ThrowHarpoon", HarpoonThrowTime);

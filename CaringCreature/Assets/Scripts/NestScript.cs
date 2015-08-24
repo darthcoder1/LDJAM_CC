@@ -53,7 +53,7 @@ public class NestScript : MonoBehaviour
 
 		AnimCtrl.SetBool("bIsDead", Hunger <= 0.0f);
 		AnimCtrl.SetBool("bIsEating", bIsEating);
-		AnimCtrl.SetBool("bSurvived", PC.ShipsFed >= WorldInfo.ShipsBeforeBoss);
+		AnimCtrl.SetBool("bSurvived", PC.ShipsFed > WorldInfo.ShipsBeforeBoss);
 
 		if (HungerDisplay)
 		{
