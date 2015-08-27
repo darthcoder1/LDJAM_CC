@@ -5,6 +5,8 @@ public class ShipController : MonoBehaviour {
 
 	private bool bOverWater;
 	public bool bIsSinking;
+	private float TimeSinking;
+	public float SinkingTimeBeforeDestroy = 3.0f;
 	private bool bHasHarpoon;
 
 	private bool bIsThrowing;
@@ -62,7 +64,7 @@ public class ShipController : MonoBehaviour {
 		Rigidbody2D RBComp = GetComponent<Rigidbody2D>();
 		if (RBComp && !bIsSinking && !bOverWater)
 		{
-			RBComp.AddForce(new Vector2(Direction, 0.0f));
+			RBComp.AddForce(new Vector2(Direction * Time.deltaTime, 0.0f));
 		}
 
 		if (transform.position.x > 500 || transform.position.x < -500)
@@ -83,7 +85,7 @@ public class ShipController : MonoBehaviour {
 			++PC.ShipsDestroyed;
 		}
 
-		if (bIsSinking && transform.position.y < -100)
+		if (bIsSinking && transform.position.y < -25)
 		{
 			GameObject.Destroy(gameObject);
 		}
@@ -111,7 +113,7 @@ public class ShipController : MonoBehaviour {
 			
 			if (!bOverWater && !bIsSinking)
 			{
-				RBComp.AddForce(new Vector2(Direction * Time.deltaTime, UpwardForce));
+				RBComp.AddForce(new Vector2(Direction * Time.deltaTime, UpwardForce * Time.deltaTime));
 			}
 		}
 
